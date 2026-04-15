@@ -1,0 +1,61 @@
+{
+  "name": "highlightjs-sui",
+  "version": "0.1.0",
+  "description": "Highlight.js grammar for Sui Move (Move 2024 edition)",
+  "homepage": "https://github.com/hoh/highlightjs-sui#readme",
+  "bugs": {
+    "url": "https://github.com/hoh/highlightjs-sui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoh/highlightjs-sui.git"
+  },
+  "keywords": [
+    "highlightjs",
+    "highlight.js",
+    "sui",
+    "move",
+    "move2024",
+    "syntax",
+    "highlighting",
+    "smart-contracts"
+  ],
+  "license": "MIT",
+  "main": "src/languages/sui-move.js",
+  "exports": {
+    ".": {
+      "import": "./src/languages/sui-move.mjs",
+      "require": "./src/languages/sui-move.js"
+    },
+    "./v10": {
+      "import": "./src/languages/sui-move.v10.mjs",
+      "require": "./src/languages/sui-move.v10.js"
+    }
+  },
+  "files": [
+    "src/languages/sui-move.js",
+    "src/languages/sui-move.mjs",
+    "src/languages/sui-move.v10.js",
+    "src/languages/sui-move.v10.mjs",
+    "docs/mdbook-integration.md",
+    "docs/syntax-coverage.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "highlight.js": ">=10.0.0"
+  },
+  "scripts": {
+    "lint": "biome lint",
+    "lint:fix": "biome lint --fix",
+    "format": "biome format --write",
+    "format:check": "biome format",
+    "check": "biome check",
+    "check:fix": "biome check --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.14",
+    "highlight.js": "^11.11.1"
+  }
+}

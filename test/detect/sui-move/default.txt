@@ -1,0 +1,46 @@
+/// Sui Move sample covering Move 2024 + Sui patterns for highlight.js detection.
+module example::token {
+    use sui::object::{Self, UID};
+    use sui::transfer;
+    use sui::tx_context::TxContext;
+
+    public struct Token has key, store {
+        id: UID,
+        value: u64,
+    }
+
+    type Balance = u64;
+    type row = vector<u8>;
+
+    public(package) fun mint(ctx: &mut TxContext): Token {
+        Token {
+            id: object::new(ctx),
+            value: 0,
+        }
+    }
+
+    entry fun send(recipient: address, t: Token) {
+        transfer::public_transfer(t, recipient);
+    }
+
+    public fun borrow_vec(v: &vector<u64>) {
+        let _ = &v[0];
+    }
+
+    #[syntax(index)]
+    public fun get(self: &vector<u8>, i: u64): u8 {
+        *vector::borrow(self, i)
+    }
+
+    public fun labeled(mut n: u64): u64 {
+        'outer: loop {
+            if (n == 0) break 'outer;
+            n = n - 1;
+        };
+        n
+    }
+
+    public fun escaped(`type`: u64): u64 {
+        `type` + 1u64
+    }
+}
