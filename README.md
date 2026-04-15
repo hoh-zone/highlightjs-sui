@@ -12,8 +12,9 @@ npm install highlightjs-sui highlight.js
 
 ## Documentation
 
-- **[mdBook integration](docs/mdbook-integration.md)** — enable this grammar for ` ```sui-move ` fenced blocks in mdBook (CDN or local esbuild).
+- **[mdBook integration](docs/mdbook-integration.md)** — wire this grammar for ` ```sui-move ` blocks. **Note:** mdBook’s default Highlight.js is **v10**, which only has **`hljs.highlightBlock`**; use the `rehighlight` helper from the doc (not `highlightElement` alone) or highlighting will not apply.
 - **[Syntax coverage](docs/syntax-coverage.md)** — what is highlighted for Sui / Move 2024 and what is not guaranteed to match the compiler.
+- Example script: **[examples/mdbook/theme/highlight-sui-move.js](examples/mdbook/theme/highlight-sui-move.js)**.
 
 ## Usage
 

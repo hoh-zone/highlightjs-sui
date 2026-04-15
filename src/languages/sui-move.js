@@ -60,6 +60,8 @@ const TYPES = [
   'i64',
   'i128',
   'i256',
+  // Non-standard name sometimes seen in docs / other languages; still colored as a type
+  'int32',
   'bool',
   'address',
   'signer',
@@ -75,6 +77,62 @@ const TYPES = [
 
 /** Matches primitive / framework type names inside `| ... |` lambda parameter lists. */
 const LAMBDA_TYPE_PATTERN = new RegExp(`\\b(?:${TYPES.join('|')})\\b`);
+
+/** Known type tokens for `name: Type` highlighting (same list as TYPES). */
+const TYPE_NAMES_ALT = TYPES.join('|');
+
+/**
+ * `tick_lower: u64`, `x: Option<T>`, `f: pkg::mod::Type` — distinguish binding, `:`, type, and `;`.
+ * Uses lookbehind/lookahead (Highlight.js is regex-based, not a full parser).
+ */
+function buildTypeAnnotationModes(scopeApi) {
+  const S = scopeApi === 'scope' ? 'scope' : 'className';
+
+  const fieldBinding = {
+    [S]: 'variable',
+    match: /\b[a-zA-Z_]\w*(?=\s*:(?!:))/,
+    relevance: 0,
+  };
+
+  const annotationColon = {
+    [S]: 'punctuation',
+    match: /(?<=\b[a-zA-Z_]\w*)\s*(:)(?!:)(?=\s*\S)/,
+    relevance: 0,
+  };
+
+  const typeAfterColonPrimitive = {
+    [S]: 'type',
+    match: new RegExp(`(?<=\\b[a-zA-Z_]\\w*\\s*:\\s*)\\b(?:${TYPE_NAMES_ALT})\\b(?:<[^>]*>)?`),
+    relevance: 0,
+  };
+
+  const typeAfterColonUpperGeneric = {
+    [S]: 'type',
+    match: /(?<=\b[a-zA-Z_]\w*\s*:\s*)\b[A-Z][a-zA-Z0-9_]*(?:<[^>]*>)?/,
+    relevance: 0,
+  };
+
+  const typeAfterColonPath = {
+    [S]: 'type',
+    match: /(?<=\b[a-zA-Z_]\w*\s*:\s*)(?:(?:0x[0-9a-fA-F_]+|[a-zA-Z_]\w*)(?:::[a-zA-Z_]\w*)+)/,
+    relevance: 0,
+  };
+
+  const statementSemicolon = {
+    [S]: 'punctuation',
+    match: /;/,
+    relevance: 0,
+  };
+
+  return [
+    fieldBinding,
+    annotationColon,
+    typeAfterColonPrimitive,
+    typeAfterColonUpperGeneric,
+    typeAfterColonPath,
+    statementSemicolon,
+  ];
+}
 
 /**
  * Macros and functions commonly written **without** `module::` after `use` in Sui / Move std.
@@ -378,6 +436,7 @@ function buildGrammarV11(hljs) {
       BYTE_STRING,
       HEX_STRING,
       BACKTICK_IDENTIFIER,
+      ...buildTypeAnnotationModes('scope'),
       NUMBER,
       ADDRESS_LITERAL,
       ATTRIBUTE,
@@ -649,6 +708,7 @@ function buildGrammarV10(hljs) {
       BYTE_STRING,
       HEX_STRING,
       BACKTICK_IDENTIFIER,
+      ...buildTypeAnnotationModes('className'),
       NUMBER,
       ADDRESS_LITERAL,
       ATTRIBUTE,
